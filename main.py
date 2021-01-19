@@ -25,15 +25,16 @@ userlb.place(x = 100, y = 100)
 passlb = Label(window, text = "Password")
 passlb.place(x = 100, y = 150)
 
-# ADMIN ENTRY
-admin_ent = Entry(window)
-admin_ent.place(x = 200, y = 100)
-
 pass_ent = Entry(window, show = "*")
 pass_ent.place(x = 200, y = 150)
 
+employ_ent = Entry(window)
+employ_ent.place(x = 200, y = 100)
+
+
+
 def login():
-    user_name = admin_ent.get()
+    user_name = employ_ent.get()
     pass_word = pass_ent.get()
     sql = "select * from logins where username = %s and password = %s"
     mycursor.execute(sql, [(user_name), (pass_word)])
@@ -62,8 +63,8 @@ def failed():
     messagebox.showerror("Login Unsuccessful","incorrect username or password.")
 
 # LOGIN BUTTON
-log_btn = Button(window,text = "Login", width = 5, command = login)
-log_btn.place(x = 150, y = 200)
+log_btn = Button(window,text = "Login", width = 10, command = login)
+log_btn.place(x = 50, y = 250)
 
 # REGISTER INTERFACE
 def register():
@@ -80,7 +81,7 @@ def register():
 
     mycursor = mydb.cursor()
 
-    # WINDOW3 LABELS
+    # WINDOW3 LABELS REGISTRATION
     full_lb = Label(window3, text = "Fullname")
     full_lb.place(x = 100, y = 50)
     user_name = Label(window3, text = "Username")
@@ -88,7 +89,7 @@ def register():
     user_pass = Label(window3, text = "Password")
     user_pass.place(x = 100, y = 150)
 
-    # WINDOW3 ENTRIES
+    # WINDOW3 ENTRIES REGISTRATION
     full_ent = Entry(window3)
     full_ent.place(x = 200, y = 50)
     user_ent = Entry(window3)
@@ -101,6 +102,7 @@ def register():
         fname = full_ent.get()
         nameuser = user_ent.get()
         passname = pass_user.get()
+
         try:
             secsql = "insert into users(full_name,username,password) values(%s, %s, %s)"
             mycursor.execute(secsql,[(fname), (nameuser),(passname)])
@@ -111,16 +113,20 @@ def register():
 
     insert = Button(window3, text = "Sign up", command = sign_up, width = 25)
     insert.configure(background = "light blue")
-    insert.place(x = 100, y = 200)
+    insert.place(x = 100, y = 250)
 
-# ADMIN CHANGES
-def key_press(event):
-    print("event.char")
+    # EXIT FUNCTION AND BUTTON
+    def quit(): #Will make the function go back to the main screen
+        window3.destroy()
 
+    exit_btn = Button(window3, text = "Quit", command = quit, width = 25)
+    exit_btn.configure(background = "red")
+    exit_btn.place(x = 100,y = 300)
+
+def admin():
     admin_gui = Tk()
     admin_gui.title("Admin Login")
     admin_gui.geometry("450x450")
-    admin_gui.bind("<Key>", key_press)
 
     # ADD BUTTON
     add_btn = Button(admin_gui, text = "Add Record")
@@ -134,8 +140,12 @@ def key_press(event):
     grant_btn = Button(admin_gui, text = "Grant Privilages")
     grant_btn.place(x = 250, y = 200)
 
-sign_btn = Button(window, text = "Register" ,width = 5, command = register)
-sign_btn.place(x = 250, y = 200)
+admin_btn = Button(window, text = "Admin", width = 10, command = admin)
+admin_btn.place(x = 300, y = 250)
+
+# REGISTER BUTTON CONNECT TO def register
+sign_btn = Button(window, text = "Register" ,width = 10, command = register)
+sign_btn.place(x = 180, y = 250)
 
 
 
