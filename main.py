@@ -10,10 +10,11 @@ mydb = mysql.connector.connect(user ="lifechoices", password = "@Lifechoices1234
                                auth_plugin = "mysql_native_password")
 
 mycursor = mydb.cursor()
-mycursor.execute("CREATE DATABASE IF NT EXIST lifechoicesonline")
-mycursor.execute("CREATE TABLE IF NOT EXIST logins")
-mycursor.execute("CREATE TABLE IF NOT EXIST users")
-
+# mycursor.execute("create database if not exists lifechoicesonline")
+# mycursor.execute("use lifechoicesonline")
+# mycursor.execute("create table if not exists logins(loginId int not null auto_increment, username varchar(20) not null, password varchar(20)not null, full_name varchar(60) not null, login_time timestamp not null default current_timestamp, logout_time timestamp not null default current_timestamp,primary key(loginId)")
+# mycursor.execute("create table if not exists users(Id int not null auto_increment, username varchar(50) not null, password varchar(20), full_name varchar(60) not null,primary key(id)")
+# mydb.commit()
 
 window = Tk()
 window.title("Lifechoices Online")
@@ -188,7 +189,7 @@ def admin():
     global keyspressed
     admin_gui = Tk()
     admin_gui.title("Admin Login")
-    admin_gui.geometry("750x550")
+    admin_gui.geometry("600x550")
     admin_gui.configure(background = "light green")
 
     # ADMIN LABEL
@@ -221,9 +222,9 @@ def admin():
         passname = pass_user.get()
 
 
-        entry = [full_ent.get(), user_ent.get(),pass_ent.get()]
+
         try:
-            if entry == "":
+            if full_ent.get() == "" or user_ent.get() == "" or pass_user.get() == "":
                 messagebox.showerror("Error", "Failed To Add The User")
             else:
                 insert4logins = "insert into logins(full_name, username,password) values(%s, %s, %s)"
@@ -286,6 +287,7 @@ def admin():
                     count+=1
 
             loginlb.place(x = 10, y = 400)
+
 
     # Check Button
     check_data = Button(admin_gui, text = "Check Record", command = check)
