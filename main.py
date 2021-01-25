@@ -10,6 +10,9 @@ mydb = mysql.connector.connect(user ="lifechoices", password = "@Lifechoices1234
                                auth_plugin = "mysql_native_password")
 
 mycursor = mydb.cursor()
+mycursor.execute("CREATE DATABASE IF NT EXIST lifechoicesonline")
+mycursor.execute("CREATE TABLE IF NOT EXIST logins")
+mycursor.execute("CREATE TABLE IF NOT EXIST users")
 
 
 window = Tk()
@@ -62,8 +65,13 @@ def login():
 def logged():
     window2 = Tk()
     window2.title("Cellphone Number")
-    window2.geometry("300x100")
+    window2.geometry("300x200")
     window2.configure(background = "light green")
+
+    userlb = Label(window2, text = "Fullname")
+    userlb.place(x = 10, y = 50)
+    full_ent = Entry(window2)
+    full_ent.place(x = 100, y = 50)
 
     # LOGIN BUTTON AND FUNCTION
     user_name = employ_ent.get()
@@ -71,25 +79,28 @@ def logged():
     mycursor.execute(update_login, [(user_name)])
     mydb.commit()
 
-    mobilb = Label(window2, text = "Cellnumber")
+    mobilb = Label(window2, text = "Cellnumber") #Mobile label
     mobilb.place(x = 10, y = 10)
-    mobi_ent = Entry(window2)
+    mobi_ent = Entry(window2) #mobile entry
     mobi_ent.place(x = 100, y = 10)
+    text = Label(window2, text = "Please put in fullname to logout")
+    text.configure(background = "green")
+    text.place(x = 10, y = 100)
 
     messagebox.showinfo("Login Successful", "Enjoy You Day")
 
     # LOGOUT BUTTON AND FUNCTION
     def logout():
-        user_name = employ_ent.get()
-        update_logout = "UPDATE logins SET logout_time = current_timestamp WHERE username = %s"
-        mycursor.execute(update_logout[(user_name)])
+        user_name = full_ent.get()
+        update_logout = "UPDATE logins SET logout_time = current_timestamp WHERE full_name = %s"
+        mycursor.execute(update_logout, [(user_name)])
         mydb.commit()
         window2.destroy()
 
     logout_btn = Button(window2, text = "Logout", command = logout)
-    logout_btn.place(x = 20, y = 50)
+    logout_btn.place(x = 20, y = 150)
 
-
+# Function if you cannot login
 def failed():
     messagebox.showerror("Login Unsuccessful","incorrect username or password.")
 
@@ -144,9 +155,6 @@ def register():
                mycursor.execute(secsql,[(fname), (nameuser),(passname)])
                mydb.commit()
                messagebox.showinfo("successful", "You Register")
-
-
-
         except Exception:
             messagebox.showerror("Message", "Could not Register")
 
@@ -165,6 +173,7 @@ def register():
     exit_btn.place(x = 100,y = 300)
 
 # ADMIN GUI
+# PRESS (ctrl-a)
 keyspressed = 0
 def admin():
 
@@ -205,6 +214,7 @@ def admin():
     loginlb = Label(admin_gui, text = "")
     loginlb.place(x = 10, y = 10)
 
+    # THE ADD RECORD INTO USERS
     def add():
         login_ent = full_ent.get()
         nameuser = user_ent.get()
@@ -231,21 +241,27 @@ def admin():
     add_btn = Button(admin_gui, text = "Add Record", command = add)
     add_btn.place(x = 50, y = 300)
 
+    # REMOVE FUNCTION AND BUTTON
     def remove():
-        nameuser = user_ent.get()
-        delete = "delete from logins where username = %s"
-        delete_reg = "delete from users where username = %s"
-        mycursor.execute(delete,[(nameuser)])
-        mycursor.execute(delete_reg,[(nameuser)])
-        mydb.commit()
-        user_ent.delete(0,END)
-        full_ent.delete(0,END)
-        pass_ent.delete(0,END)
+        if user_ent.get() == "":
+            messagebox.showinfo("error","Nothing to delete")
+        else:
+            nameuser = user_ent.get()
+            delete = "delete from logins where username = %s"
+            delete_reg = "delete from users where username = %s"
+            mycursor.execute(delete,[(nameuser)])
+            mycursor.execute(delete_reg,[(nameuser)])
+            mydb.commit()
+            user_ent.delete(0,END)
+            full_ent.delete(0,END)
+            pass_ent.delete(0,END)
+            messagebox.showinfo("Success", "Successfully Deleted User")
 
     # REMOVE BUTTON
     remove_data = Button(admin_gui, text = "Delete Record",command = remove)
     remove_data.place(x = 200, y = 300)
 
+    # THE CHECK RECORD FUNCTION AND BUTTON
     def check():
 
         secsql = mycursor.execute("select full_name,username,password,login_time, logout_time from logins ")
